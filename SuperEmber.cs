@@ -94,11 +94,11 @@
                 var target = Selector.Active.GetTargets().FirstOrDefault();
                 if (target != null)
                 {
-                    var mod = Me.FindModifier("modifier_ember_spirit_fire_remnant_charge_counter");
+                    var mod = MyHero.FindModifier("modifier_ember_spirit_fire_remnant_charge_counter");
                     var stacks = mod?.StackCount;
                     if (stacks > 0)
                     {
-                        Remnant.UseAbility(target.Position);
+                        RemnantAbility.UseAbility(target.Position);
                         Log.Debug("Remnant: "+stacks);
                         await Task.Delay(20);
                     }
