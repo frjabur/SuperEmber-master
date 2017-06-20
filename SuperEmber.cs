@@ -248,6 +248,14 @@ public override async Task ExecuteAsync(CancellationToken token)
                     await Task.Delay(10, token);
                 }
 
+		var atos = this.MyHero.GetItemById(AbilityId.item_rod_of_atos);
+                if (atos != null && atos.CanBeCasted() && !UnitExtensions.IsMagicImmune(target) && IsRooted() && this.Config.UseItems.Value.IsEnabled("item_rod_of_atos"))
+                {
+		if (!target.IsRooted()){
+                    atos.UseAbility(target);
+                    await Task.Delay(10, token);
+                }
+
                 var dagon = MyHero.GetDagon();
                 if (dagon != null && dagon.CanBeCasted() && !UnitExtensions.IsMagicImmune(target) && this.Config.UseItems.Value.IsEnabled("item_dagon"))
                 {
