@@ -97,7 +97,7 @@ public override async Task ExecuteAsync(CancellationToken token)
 
             var target = this.TargetSelector.Value.Active.GetTargets().FirstOrDefault();
 	    
-            if (this.ChainsAbility.CanBeCasted() && !UnitExtensions.IsSilenced(this.MyHero) && this.MyHero.IsAlive && target != null)
+            if (this.FlameAbility.CanBeCasted() && !UnitExtensions.IsSilenced(this.MyHero) && this.MyHero.IsAlive && target != null)
             {
                 var blink = this.MyHero.GetItemById(AbilityId.item_blink);
                 var forece = this.MyHero.GetItemById(AbilityId.item_force_staff);
@@ -109,7 +109,7 @@ public override async Task ExecuteAsync(CancellationToken token)
                 // Prediction? no, have not heard..
                 if (distanceToHitChance < rangeCallAbility)
                 {
-                    this.ChainsAbility.UseAbility();
+                    this.FlameAbility.UseAbility();
                     await Task.Delay((int)delayCallAbility, token);
                 }
                 else if (distanceToHitChance < 1200 && blink != null && blink.CanBeCasted() && this.Config.UseItemsInit.Value.IsEnabled(blink.Name))
