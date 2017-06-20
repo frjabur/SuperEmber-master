@@ -82,15 +82,14 @@
                     var target = TargetSelector.Active.GetTargets().FirstOrDefault();
                     if (target != null)
                     {
-                        var mod = Me.FindModifier("modifier_ember_spirit_sleight_of_fist_caster");
+                        var mod = MyHero.FindModifier("modifier_ember_spirit_sleight_of_fist_caster");
                         if (mod != null)
                         {
-                            if (Chains.CanBeCasted())
+                            if (ChainsAbility.CanBeCasted())
                             {
-                                if (Me.Distance2D(target) <= 400)
+                                if (MyHero.Distance2D(target) <= 400)
                                 {
-                                    Chains.UseAbility();
-                                    Log.Debug("Auto Chains usages");
+                                    ChainsAbility.UseAbility();
                                     await Task.Delay(100);
                                 }
                             }
