@@ -65,6 +65,29 @@
 
             base.OnDeactivate();
         }
+        private void Drawing_OnDraw(EventArgs args)
+        {
+            if (!this.Config.Enabled)
+                return;
+
+            var enemies = ObjectManager.GetEntities<Hero>()
+                .Where(x => x.IsVisible && x.IsAlive && !x.IsIllusion && x.Team != this.MyHero.Team)
+                .ToList();
+
+            if (enemies == null)
+                return;
+
+            var threshold = this.FistAbility.GetAbilityData("kill_threshold");
+
+            foreach (var enemy in enemies) //tirar a barra depois TODO
+            {
+                var tmp = enemy.Health < threshold ? enemy.Health : threshold;
+                var perc = (float)tmp / (float)enemy.MaximumHealth;
+                var pos = HUDInfo.GetHPbarPosition(enemy) + 2;
+                var size = new Vector2(HUDInfo.GetHPBarSizeX(enemy) - 6, HUDInfo.GetHpBarSizeY(enemy) - 2);
+
+                Drawing.DrawRect(pos, new Vector2(size.X * perc, size.Y), Color.Chocolate);
+            }
         
 //test start
         private void AutoChains(object sender, EventArgs args)
