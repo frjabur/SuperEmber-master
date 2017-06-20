@@ -15,8 +15,6 @@
     using Ensage.SDK.Orbwalker;
     using Ensage.SDK.Orbwalker.Modes;
     using Ensage.SDK.TargetSelector;
-    using Ensage.Common.Extensions;
-    using Ensage.Common.Extensions.SharpDX;
 
     using SharpDX;
 
@@ -251,7 +249,7 @@ public override async Task ExecuteAsync(CancellationToken token)
                 }
 
 		var atos = this.MyHero.GetItemById(AbilityId.item_rod_of_atos);
-                if (atos != null && atos.CanBeCasted() && !UnitExtensions.IsMagicImmune(target) && IsRooted() && this.Config.UseItems.Value.IsEnabled("item_rod_of_atos"))
+                if (atos != null && atos.CanBeCasted() && !UnitExtensions.IsMagicImmune(target) && this.Config.UseItems.Value.IsEnabled("item_rod_of_atos"))
                 {
 		if (!target.IsRooted()){
                     atos.UseAbility(target);
