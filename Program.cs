@@ -11,6 +11,7 @@
     using Ensage.SDK.Service;
     using Ensage.SDK.Service.Metadata;
     using Ensage.SDK.TargetSelector;
+    using Ensage.SDK.Extensions;
 
     [ExportPlugin("SuperEmber!", HeroId.npc_dota_hero_ember_spirit)]
     public class Program : Plugin
