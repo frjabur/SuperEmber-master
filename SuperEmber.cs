@@ -15,6 +15,8 @@
     using Ensage.SDK.Orbwalker;
     using Ensage.SDK.Orbwalker.Modes;
     using Ensage.SDK.TargetSelector;
+    using Ensage.Common.Extensions;
+    using Ensage.Common.Extensions.SharpDX;
 
     using SharpDX;
 
