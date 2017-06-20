@@ -179,7 +179,7 @@
             }
         }
 
-        public async Task UseItems(Unit target, CancellationToken token) //REMAKE LOGIC TODO
+        public async Task UseItems(Unit target, CancellationToken token)
         {
             var called = EntityManager<Hero>.Entities
                 .Where(x => this.MyHero.Team != x.Team && x.IsValid && !x.IsIllusion && x.IsAlive)
