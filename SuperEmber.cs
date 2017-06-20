@@ -88,7 +88,7 @@
 
                 Drawing.DrawRect(pos, new Vector2(size.X * perc, size.Y), Color.Chocolate);
             }
-        
+        }
 //test start
         private void AutoChains(object sender, EventArgs args)
         {
