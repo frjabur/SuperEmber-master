@@ -90,95 +90,110 @@
                 Drawing.DrawRect(pos, new Vector2(size.X * perc, size.Y), Color.Chocolate);
             }
         }
-
-        public override async Task ExecuteAsync(CancellationToken token)
+//test start
+        private void RemnantActivator(object sender, OnValueChangeEventArgs e)
         {
-            if (!this.Config.Enabled)
-                return;
-
-            var target = this.TargetSelector.Value.Active.GetTargets().FirstOrDefault();
-	    
-            if (this.ChainsAbility.CanBeCasted() && !UnitExtensions.IsSilenced(this.MyHero) && this.MyHero.IsAlive && target != null)
+            var newValue = e.GetNewValue<KeyBind>().Active;
+            if (newValue)
+                UpdateManager.BeginInvoke(RemnantCombo);
+        }
+        private void FistAndComboKeyChanged(object sender, OnValueChangeEventArgs args)
+        {
+            var newValue = args.GetNewValue<KeyBind>().Active;
+            if (newValue)
+                UpdateManager.BeginInvoke(FistAndChain);
+        }
+        private void AutoChains(object sender, OnValueChangeEventArgs args)
+        {
+            var newValue = args.GetNewValue<KeyBind>().Active;
+            if (newValue)
+                UpdateManager.BeginInvoke(AutoChainer);
+        }
+        
+        private async void RemnantCombo()
+        {
+            Log.Debug("start remnant combo");
+            while (Config.RemntantCombo.Value.Active)
             {
-                var blink = this.MyHero.GetItemById(AbilityId.item_blink);
-                var forece = this.MyHero.GetItemById(AbilityId.item_force_staff);
-                var rangeCallAbility = 300 + target.HullRadius;
-                var delayCallAbility = this.ChainsAbility.FindCastPoint() * 1000 + Game.Ping;
-                var posForHitChance = UnitExtensions.InFront(target, (target.IsMoving ? (target.MovementSpeed / 2) : 0));
-                var distanceToHitChance = EntityExtensions.Distance2D(this.MyHero, posForHitChance);
-
-                // Prediction? no, have not heard..
-                if (distanceToHitChance < rangeCallAbility)
+                var target = Selector.Active.GetTargets().FirstOrDefault();
+                if (target != null)
                 {
-                    this.ChainsAbility.UseAbility();
-                    await Task.Delay((int)delayCallAbility, token);
-                }
-                else if (distanceToHitChance < 1200 && blink != null && blink.CanBeCasted() && this.Config.UseItemsInit.Value.IsEnabled(blink.Name))
-                {
-                    blink.UseAbility(posForHitChance);
-                    await Task.Delay(10, token);
-                }
-                // 800?
-                else if (distanceToHitChance < 800 && forece != null && forece.CanBeCasted() && this.Config.UseItemsInit.Value.IsEnabled(forece.Name))
-                {
-                    if (Vector3Extensions.Distance(UnitExtensions.InFront(this.MyHero, 800), posForHitChance) < rangeCallAbility)
+                    var mod = Me.FindModifier("modifier_ember_spirit_fire_remnant_charge_counter");
+                    var stacks = mod?.StackCount;
+                    if (stacks > 0)
                     {
-                        forece.UseAbility(this.MyHero);
-                        await Task.Delay(10, token);
+                        Remnant.UseAbility(target.Position);
+                        Log.Debug("Remnant: "+stacks);
+                        await Task.Delay(20);
                     }
                     else
                     {
-                        var posForTurn = this.MyHero.Position.Extend(posForHitChance, 70);
-
-                        this.Orbwalker.Move(posForTurn);
-
-                        await Task.Delay((int)(MyHero.GetTurnTime(posForHitChance) * 1000.0 + Game.Ping), token);
+                        if (
+                            EntityManager<Entity>.Entities.Any(
+                                x => x.Name == "npc_dota_ember_spirit_remnant" && x.Distance2D(target) <= 450))
+                        {
+                            await Task.Delay(150);
+                            Activator.UseAbility(target.Position);
+                            Log.Debug("Activator");
+                            await Task.Delay(100);
+                        }
                     }
                 }
-                else
-                {
-                    this.Orbwalker.Move(posForHitChance);
-                }
+                await Task.Delay(1);
             }
-            else
-            {
-                this.Orbwalker.OrbwalkTo(target);
-            }
-
-            await Kill(token);
-
-            await UseItems(target, token);
-
-            await Task.Delay(50, token);
         }
-		
-        public async Task Kill(CancellationToken token)
+        private async void FistAndChain()
         {
-            var enemies = EntityManager<Hero>.Entities
-                .Where(x => this.MyHero.Team != x.Team && x.IsValid && !x.IsIllusion && x.IsAlive)
-                .OrderBy(e => e.Distance2D(MyHero))
-                .ToList();
-
-            if (enemies == null)
-                return;
-
-            var threshold = this.FistAbility.GetAbilityData("kill_threshold");
-
-            foreach (var enemy in enemies)
+            Log.Debug("starting combo");
+            while (Config.FistAndComboKey.Value.Active)
             {
-                if (enemy.Health + (enemy.HealthRegeneration / 2) <= threshold)
+                var target = Selector.Active.GetTargets().FirstOrDefault();
+                if (target != null)
                 {
-                    if (!UnitExtensions.IsSilenced(this.MyHero) && this.FistAbility.CanBeCasted(enemy) && this.FistAbility.CanHit(enemy))
+                    if (Fist.CanBeCasted() && Fist.CanHit(target))
                     {
-                        this.FistAbility.UseAbility(enemy);
-
-                        // Can be made shorter than FindCastPoint
-                        await Task.Delay(50, token);
+                        Fist.UseAbility(target.Position);
+                        Log.Debug("Fist usages");
+                        await Task.Delay(25);
+                    }
+                    if (Chains.CanBeCasted())
+                    {
+                        if (Me.Distance2D(target) <= 400)
+                        {
+                            Chains.UseAbility();
+                            Log.Debug("Chains usages");
+                            await Task.Delay(100);
+                        }
                     }
                 }
+                await Task.Delay(1);
             }
         }
-
+        public async void AutoChainer()
+        {
+            while (Config.AutoChain.Value)
+            {
+                if (!Config.FistAndComboKey.Value.Active && !Config.RemntantCombo.Value.Active)
+                {
+                    var target = Selector.Active.GetTargets().FirstOrDefault();
+                    if (target != null)
+                    {
+                        var mod = Me.FindModifier("modifier_ember_spirit_sleight_of_fist_caster");
+                        if (mod != null)
+                        {
+                            if (Chains.CanBeCasted())
+                            {
+                                if (Me.Distance2D(target) <= 400)
+                                {
+                                    Chains.UseAbility();
+                                    Log.Debug("Auto Chains usages");
+                                    await Task.Delay(100);
+                                }
+                            }
+                        }
+                    }
+                }
+//test finish
         public async Task UseItems(Unit target, CancellationToken token)
         {
             var called = EntityManager<Hero>.Entities
