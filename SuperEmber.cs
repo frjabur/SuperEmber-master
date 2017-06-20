@@ -151,7 +151,7 @@
 
             await Task.Delay(50, token);
         }
-		}
+		
         public async Task Kill(CancellationToken token)
         {
             var enemies = EntityManager<Hero>.Entities
