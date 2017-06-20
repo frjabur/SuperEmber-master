@@ -8,7 +8,7 @@
 
     using Ensage;
     using Ensage.Common;
-    //using Ensage.Common.Extensions;
+    using Ensage.Common.Extensions;
     using Ensage.SDK.Extensions;
     using Ensage.SDK.Helpers;
     using Ensage.SDK.Input;
@@ -249,9 +249,9 @@ public override async Task ExecuteAsync(CancellationToken token)
                 }
 
 		var atos = this.MyHero.GetItemById(AbilityId.item_rod_of_atos);
-                if (atos != null && atos.CanBeCasted() && !UnitExtensions.IsMagicImmune(target) && this.Config.UseItems.Value.IsEnabled("item_rod_of_atos"))
+                if (atos != null && atos.CanBeCasted() && !UnitExtensions.IsMagicImmune(target) && !UnitExtensions.IsRooted() && this.Config.UseItems.Value.IsEnabled("item_rod_of_atos"))
                 {
-		if (!target.IsRooted()){
+		if (!target.!UnitExtensions.IsRooted()){
                     atos.UseAbility(target);
                     await Task.Delay(10, token);
                 }
