@@ -67,83 +67,11 @@
         }
         
 //test start
-        private void RemnantActivator(object sender, EventArgs args)
-        {
-            var newValue = e.GetNewValue<KeyBind>().Active;
-            if (newValue)
-                UpdateManager.BeginInvoke(RemnantCombo);
-        }
-        private void FistAndComboKeyChanged(object sender, EventArgs args)
-        {
-            var newValue = args.GetNewValue<KeyBind>().Active;
-            if (newValue)
-                UpdateManager.BeginInvoke(FistAndChain);
-        }
         private void AutoChains(object sender, EventArgs args)
         {
             var newValue = args.GetNewValue<KeyBind>().Active;
             if (newValue)
                 UpdateManager.BeginInvoke(AutoChainer);
-        }
-        
-        private async void RemnantCombo()
-        {
-            Log.Debug("start remnant combo");
-            while (Config.RemntantCombo.Value.Active)
-            {
-                var target = TargetSelector.Active.GetTargets().FirstOrDefault();
-                if (target != null)
-                {
-                    var mod = MyHero.FindModifier("modifier_ember_spirit_fire_remnant_charge_counter");
-                    var stacks = mod?.StackCount;
-                    if (stacks > 0)
-                    {
-                        RemnantAbility.UseAbility(target.Position);
-                        Log.Debug("Remnant: "+stacks);
-                        await Task.Delay(20);
-                    }
-                    else
-                    {
-                        if (
-                            EntityManager<Entity>.Entities.Any(
-                                x => x.Name == "npc_dota_ember_spirit_remnant" && x.Distance2D(target) <= 450))
-                        {
-                            await Task.Delay(150);
-                            Activator.UseAbility(target.Position);
-                            Log.Debug("Activator");
-                            await Task.Delay(100);
-                        }
-                    }
-                }
-                await Task.Delay(1);
-            }
-        }
-        private async void FistAndChain()
-        {
-            Log.Debug("starting combo");
-            while (Config.FistAndComboKey.Value.Active)
-            {
-                var target = TargetSelector.Active.GetTargets().FirstOrDefault();
-                if (target != null)
-                {
-                    if (Fist.CanBeCasted() && Fist.CanHit(target))
-                    {
-                        Fist.UseAbility(target.Position);
-                        Log.Debug("Fist usages");
-                        await Task.Delay(25);
-                    }
-                    if (Chains.CanBeCasted())
-                    {
-                        if (Me.Distance2D(target) <= 400)
-                        {
-                            Chains.UseAbility();
-                            Log.Debug("Chains usages");
-                            await Task.Delay(100);
-                        }
-                    }
-                }
-                await Task.Delay(1);
-            }
         }
         public async void AutoChainer()
         {
