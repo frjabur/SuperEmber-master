@@ -257,6 +257,7 @@ public override async Task ExecuteAsync(CancellationToken token)
                         await Task.Delay(50, token);
                     }
 		}
+	    }
         public async Task UseItems(Unit target, CancellationToken token)
         {
             var called = EntityManager<Hero>.Entities
