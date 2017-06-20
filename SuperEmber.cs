@@ -123,7 +123,7 @@
             Log.Debug("starting combo");
             while (Config.FistAndComboKey.Value.Active)
             {
-                var target = Selector.Active.GetTargets().FirstOrDefault();
+                var target = TargetSelector.Active.GetTargets().FirstOrDefault();
                 if (target != null)
                 {
                     if (Fist.CanBeCasted() && Fist.CanHit(target))
@@ -151,7 +151,7 @@
             {
                 if (!Config.FistAndComboKey.Value.Active && !Config.RemntantCombo.Value.Active)
                 {
-                    var target = Selector.Active.GetTargets().FirstOrDefault();
+                    var target = TargetSelector.Active.GetTargets().FirstOrDefault();
                     if (target != null)
                     {
                         var mod = Me.FindModifier("modifier_ember_spirit_sleight_of_fist_caster");
