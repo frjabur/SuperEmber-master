@@ -172,6 +172,90 @@
 	}
 }
 //test finish
+public override async Task ExecuteAsync(CancellationToken token)
+        {
+            if (!this.Config.Enabled)
+                return;
+
+            var target = this.TargetSelector.Value.Active.GetTargets().FirstOrDefault();
+	    
+            if (this.ChainsAbility.CanBeCasted() && !UnitExtensions.IsSilenced(this.MyHero) && this.MyHero.IsAlive && target != null)
+            {
+                var blink = this.MyHero.GetItemById(AbilityId.item_blink);
+                var forece = this.MyHero.GetItemById(AbilityId.item_force_staff);
+                var rangeCallAbility = 300 + target.HullRadius;
+                var delayCallAbility = this.ChainsAbility.FindCastPoint() * 1000 + Game.Ping;
+                var posForHitChance = UnitExtensions.InFront(target, (target.IsMoving ? (target.MovementSpeed / 2) : 0));
+                var distanceToHitChance = EntityExtensions.Distance2D(this.MyHero, posForHitChance);
+
+                // Prediction? no, have not heard..
+                if (distanceToHitChance < rangeCallAbility)
+                {
+                    this.ChainsAbility.UseAbility();
+                    await Task.Delay((int)delayCallAbility, token);
+                }
+                else if (distanceToHitChance < 1200 && blink != null && blink.CanBeCasted() && this.Config.UseItemsInit.Value.IsEnabled(blink.Name))
+                {
+                    blink.UseAbility(posForHitChance);
+                    await Task.Delay(10, token);
+                }
+                // 800?
+                else if (distanceToHitChance < 800 && forece != null && forece.CanBeCasted() && this.Config.UseItemsInit.Value.IsEnabled(forece.Name))
+                {
+                    if (Vector3Extensions.Distance(UnitExtensions.InFront(this.MyHero, 800), posForHitChance) < rangeCallAbility)
+                    {
+                        forece.UseAbility(this.MyHero);
+                        await Task.Delay(10, token);
+                    }
+                    else
+                    {
+                        var posForTurn = this.MyHero.Position.Extend(posForHitChance, 70);
+
+                        this.Orbwalker.Move(posForTurn);
+
+                        await Task.Delay((int)(MyHero.GetTurnTime(posForHitChance) * 1000.0 + Game.Ping), token);
+                    }
+                }
+                else
+                {
+                    this.Orbwalker.Move(posForHitChance);
+                }
+            }
+            else
+            {
+                this.Orbwalker.OrbwalkTo(target);
+            }
+
+            await Kill(token);
+
+            await UseItems(target, token);
+
+            await Task.Delay(50, token);
+        }
+		}
+        public async Task Kill(CancellationToken token)
+        {
+            var enemies = EntityManager<Hero>.Entities
+                .Where(x => this.MyHero.Team != x.Team && x.IsValid && !x.IsIllusion && x.IsAlive)
+                .OrderBy(e => e.Distance2D(MyHero))
+                .ToList();
+
+            if (enemies == null)
+                return;
+
+            var threshold = this.FistAbility.GetAbilityData("kill_threshold");
+
+            foreach (var enemy in enemies)
+            {
+                if (enemy.Health + (enemy.HealthRegeneration / 2) <= threshold)
+                {
+                    if (!UnitExtensions.IsSilenced(this.MyHero) && this.FistAbility.CanBeCasted(enemy) && this.FistAbility.CanHit(enemy))
+                    {
+                        this.FistAbility.UseAbility(enemy);
+
+                        // Can be made shorter than FindCastPoint
+                        await Task.Delay(50, token);
+                    }
         public async Task UseItems(Unit target, CancellationToken token)
         {
             var called = EntityManager<Hero>.Entities
