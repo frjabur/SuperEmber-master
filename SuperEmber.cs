@@ -89,39 +89,7 @@
                 Drawing.DrawRect(pos, new Vector2(size.X * perc, size.Y), Color.Chocolate);
             }
         }
-//test start
-        private void AutoChains(object sender, EventArgs args)
-        {
-            var newValue = args.GetNewValue<KeyBind>().Active;
-            if (newValue)
-                UpdateManager.BeginInvoke(AutoChainer);
-        }
-        public async void AutoChainer()
-        {
-            while (Config.AutoChain.Value)
-            {
-                if (!Config.FistAndComboKey.Value.Active && !Config.RemntantCombo.Value.Active)
-                {
-                    var target = TargetSelector.Active.GetTargets().FirstOrDefault();
-                    if (target != null)
-                    {
-                        var mod = MyHero.FindModifier("modifier_ember_spirit_sleight_of_fist_caster");
-                        if (mod != null)
-                        {
-                            if (ChainsAbility.CanBeCasted())
-                            {
-                                if (MyHero.Distance2D(target) <= 400)
-                                {
-                                    ChainsAbility.UseAbility();
-                                    await Task.Delay(100);
-                                }
-                            }
-                        }
-                    }
-                }
-	}
-}
-//test finish
+
 public override async Task ExecuteAsync(CancellationToken token)
         {
             if (!this.Config.Enabled)
