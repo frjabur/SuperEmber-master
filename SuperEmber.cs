@@ -91,7 +91,7 @@
             Log.Debug("start remnant combo");
             while (Config.RemntantCombo.Value.Active)
             {
-                var target = Selector.Active.GetTargets().FirstOrDefault();
+                var target = TargetSelector.Active.GetTargets().FirstOrDefault();
                 if (target != null)
                 {
                     var mod = MyHero.FindModifier("modifier_ember_spirit_fire_remnant_charge_counter");
