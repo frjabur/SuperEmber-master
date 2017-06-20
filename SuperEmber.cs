@@ -91,19 +91,19 @@
             }
         }
 //test start
-        private void RemnantActivator(object sender, OnValueChangeEventArgs e)
+        private void RemnantActivator(object sender, EventArgs args)
         {
             var newValue = e.GetNewValue<KeyBind>().Active;
             if (newValue)
                 UpdateManager.BeginInvoke(RemnantCombo);
         }
-        private void FistAndComboKeyChanged(object sender, OnValueChangeEventArgs args)
+        private void FistAndComboKeyChanged(object sender, EventArgs args)
         {
             var newValue = args.GetNewValue<KeyBind>().Active;
             if (newValue)
                 UpdateManager.BeginInvoke(FistAndChain);
         }
-        private void AutoChains(object sender, OnValueChangeEventArgs args)
+        private void AutoChains(object sender, EventArgs args)
         {
             var newValue = args.GetNewValue<KeyBind>().Active;
             if (newValue)
