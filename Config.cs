@@ -23,6 +23,7 @@
 	    { "item_black_king_bar", false },
             { "item_shivas_guard", true },
 	    { "item_bloodthorn", true },
+	    { "item_rod_of_atos", true },
             { "item_orchid", true },
 	    { "item_veil_of_discord", true },
 	    { "item_ethereal_blade", true },
