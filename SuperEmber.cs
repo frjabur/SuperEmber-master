@@ -65,7 +65,7 @@
 
             base.OnDeactivate();
         }
-        }
+        
 //test start
         private void RemnantActivator(object sender, EventArgs args)
         {
