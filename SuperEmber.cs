@@ -208,7 +208,7 @@
                     await Task.Delay(10, token);
                 }
 
-                var veil = this.Myhero.GetItemById(AbilityId.item_veil_of_discord);
+                var veil = this.MyHero.GetItemById(AbilityId.item_veil_of_discord);
                 if (veil != null && veil.CanBeCasted() && !UnitExtensions.IsMagicImmune(target) && this.Config.UseItems.Value.IsEnabled(veil.Name))
                 {
                     veil.UseAbility(target.Position);
