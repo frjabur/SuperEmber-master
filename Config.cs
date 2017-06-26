@@ -43,8 +43,21 @@
             this.Key = this.Menu.Item("Combo Key", new KeyBind(32));
             this.UseItemsInit = this.Menu.Item("Items For Initiation", new AbilityToggler(ItemsInitiation));
             this.UseItems = this.Menu.Item("Use Items In Call", new AbilityToggler(Items));
+Factory = MenuFactory.Create("SuperEmber v2");
+FistAndComboKey = Factory.Item("Fist + Chain Key", new KeyBind('F'));
+RemntantCombo = Factory.Item("3x Remntant Combo", new KeyBind('D'));
+PussyKey = Factory.Item("Pussy key", new KeyBind('G'));
+AutoChain = Factory.Item("Auto chain in fist", true);
         }
+        public MenuItem<KeyBind> PussyKey { get; set; }
 
+        public MenuItem<bool> AutoChain { get; set; }
+
+        public MenuItem<KeyBind> RemntantCombo { get; set; }
+
+        public MenuFactory Factory { get; }
+
+        public MenuItem<KeyBind> FistAndComboKey { get; }
         public void Dispose()
         {
             this.Menu?.Dispose();
