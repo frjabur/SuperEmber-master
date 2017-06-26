@@ -30,7 +30,7 @@ using PlaySharp.Toolkit.Logging;
         //private Unit MyHero;
         //private Unit Target;
 [ExportPlugin("Ember Annihilation", author:"JumpAttacker", units: HeroId.npc_dota_hero_ember_spirit)]
-public class Ember : Plugin
+public class SuperEmber : Plugin
 {
 private static readonly ILog Log = AssemblyLogs.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 private Ability Fist { get; }
@@ -49,7 +49,7 @@ private ITargetSelectorManager Selector { get; }
 
         //public Config Config { get; }
 [ImportingConstructor]
-public Ember([Import] IServiceContext context, [Import] ITargetSelectorManager selector/*, [Import] IPrediction prediction*/)
+public SuperEmber([Import] IServiceContext context, [Import] ITargetSelectorManager selector/*, [Import] IPrediction prediction*/)
 {
 Me = context.Owner as Hero;
 Selector = selector;
