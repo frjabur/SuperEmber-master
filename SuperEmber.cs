@@ -88,7 +88,7 @@ if (Config.AutoChain.Value)
 UpdateManager.BeginInvoke(AutoChainer);
 }
 
-private void PussyAction(object sender, OnValueChangeEventArgs e)
+private void PussyAction(object sender, EventArgs args) //OnValueChangeEventArgs e
 {
 var newValue = e.GetNewValue<KeyBind>().Active;
 if (newValue)
